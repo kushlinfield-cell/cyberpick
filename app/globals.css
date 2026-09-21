@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    @apply bg-paper text-ink;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply font-mono text-xs font-medium uppercase tracking-[0.08em] text-accent;
+  }
+
+  .eyebrow-light {
+    @apply font-mono text-xs font-medium uppercase tracking-[0.08em] text-white/60;
+  }
+
+  .label-muted {
+    @apply font-mono text-xs font-medium uppercase tracking-[0.06em] text-muted;
+  }
+
+  .mono-tag {
+    @apply rounded border border-border bg-bg-light px-2 py-0.5 font-mono text-[12px] text-ink;
+  }
+
+  .mono-tag-dark {
+    @apply rounded border border-border-dark bg-white/5 px-2 py-0.5 font-mono text-[12px] text-white;
+  }
+}
