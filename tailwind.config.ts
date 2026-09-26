@@ -27,6 +27,11 @@ const config: Config = {
           hover: "#38C6EF",
           soft: "#E4F7FC",
         },
+        // A second, cooler tint (distinct from bg-light's neutral gray) used
+        // sparingly to give a section more character without introducing a
+        // new hue outside the brand's single accent.
+        tint: "#EAF3F8",
+        "tint-border": "#D7E6EE",
         blue: "#3B82F6",
         success: {
           DEFAULT: "#1F8A70",

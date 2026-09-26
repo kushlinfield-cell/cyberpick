@@ -31,9 +31,9 @@ export default function ProcurementStepper() {
   if (activeIndex === -1) return null;
 
   const steps = [
-    { key: "requirements", label: dict.requirements.title, href: `/${locale}/requirements` },
-    { key: "matches", label: dict.matches.title, href: `/${locale}/matches` },
-    { key: "proposals", label: dict.requestProposals.title, href: `/${locale}/request-proposals` },
+    { key: "requirements", label: dict.common.stepRequirements, href: `/${locale}/requirements` },
+    { key: "matches", label: dict.common.stepMatches, href: `/${locale}/matches` },
+    { key: "proposals", label: dict.common.stepProposals, href: `/${locale}/request-proposals` },
   ];
 
   return (

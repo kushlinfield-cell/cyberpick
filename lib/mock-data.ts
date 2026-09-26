@@ -82,18 +82,6 @@ export const proposalRequestFields = [
   "References",
 ];
 
-export type ServiceStatus = "active" | "soon";
-export const services: { name: string; status: ServiceStatus }[] = [
-  { name: "Managed Detection & Response", status: "active" },
-  { name: "SOC Services", status: "soon" },
-  { name: "Penetration Testing", status: "soon" },
-  { name: "Incident Response", status: "soon" },
-  { name: "vCISO", status: "soon" },
-  { name: "ISO 27001", status: "soon" },
-  { name: "NIS2", status: "soon" },
-  { name: "Cloud Security", status: "soon" },
-];
-
 // ─────────────────────────────────────────────────────────────────────────
 // Confirmed service tags — only assigned where a provider's own public
 // materials explicitly describe that capability. Absence of a tag means
@@ -319,6 +307,27 @@ export const providers: Provider[] = [
     ],
   },
 ];
+
+// ─────────────────────────────────────────────────────────────────────────
+// What we show on the homepage's "services" grid is derived directly from
+// real, sourced provider data above — not a separate, hand-authored list.
+// Every tag in SERVICE_TAG_ORDER already has at least one confirmed real
+// provider behind it, so all 9 are shown; none are placeholders. Only MDR
+// has a dedicated guided questionnaire today — the rest are comparable
+// through the provider directory's service-tag filter.
+// ─────────────────────────────────────────────────────────────────────────
+
+export type ServiceOffering = {
+  tag: ServiceTag;
+  guidedQuestionnaire: boolean;
+  providerCount: number;
+};
+
+export const serviceOfferings: ServiceOffering[] = SERVICE_TAG_ORDER.map((tag) => ({
+  tag,
+  guidedQuestionnaire: tag === "mdr",
+  providerCount: providers.filter((p) => p.confirmedServices.includes(tag)).length,
+}));
 
 export function getProvider(slug: string): Provider | undefined {
   return providers.find((p) => p.slug === slug);

@@ -3,7 +3,7 @@
 import SiteNav from "@/components/SiteNav";
 import Button from "@/components/Button";
 import { ArrowRightIcon, CheckIcon, DashIcon, NodeIcon, LockIcon } from "@/components/Icons";
-import { providers, services, confirmedServiceCount, SERVICE_TAG_ORDER, getProvider } from "@/lib/mock-data";
+import { providers, serviceOfferings, confirmedServiceCount, SERVICE_TAG_ORDER, getProvider } from "@/lib/mock-data";
 import { useI18n } from "@/context/I18nContext";
 
 const FEATURED_SLUGS = ["truesec", "mnemonic", "csis-security-group"];
@@ -63,18 +63,18 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* How it works */}
-      <section id="how-it-works" className="border-t border-border bg-bg-light">
+      {/* How it works — a second, cooler tint gives this section its own character */}
+      <section id="how-it-works" className="border-y border-tint-border bg-tint">
         <div className="mx-auto max-w-content px-6 py-20">
           <h2 className="text-3xl font-semibold tracking-tight text-ink">{dict.home.howItWorksHeading}</h2>
           <div className="relative mt-14 grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
             <div
-              className="pointer-events-none absolute left-0 right-0 top-[13px] hidden h-px bg-border-strong md:block"
+              className="pointer-events-none absolute left-0 right-0 top-[13px] hidden h-px bg-tint-border md:block"
               aria-hidden="true"
             />
             {dict.home.steps.map((step, i) => (
               <div key={step.title} className="relative flex flex-col gap-3">
-                <span className="relative z-10 flex h-7 w-7 items-center justify-center rounded-full border border-accent bg-bg-light font-mono text-xs text-accent">
+                <span className="relative z-10 flex h-7 w-7 items-center justify-center rounded-full border border-accent bg-tint font-mono text-xs text-accent">
                   {String(i + 1).padStart(2, "0").slice(1)}
                 </span>
                 <h3 className="text-lg font-semibold text-ink">{step.title}</h3>
@@ -166,27 +166,28 @@ export default function HomePage() {
             <p className="max-w-xl text-[15px] text-muted">{dict.home.servicesSubcopy}</p>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {services.map((service) => (
+            {serviceOfferings.map((offering) => (
               <div
-                key={service.name}
+                key={offering.tag}
                 className={
-                  service.status === "active"
+                  offering.guidedQuestionnaire
                     ? "flex flex-col gap-3 rounded-lg border border-accent bg-white p-6"
-                    : "flex flex-col gap-3 rounded-lg border border-border bg-white/60 p-6"
+                    : "flex flex-col gap-3 rounded-lg border border-border bg-white p-6"
                 }
               >
-                <NodeIcon className={service.status === "active" ? "h-5 w-5 text-accent" : "h-5 w-5 text-muted"} />
-                <span className={service.status === "active" ? "text-sm font-medium text-ink" : "text-sm font-medium text-muted"}>
-                  {service.name}
-                </span>
+                <NodeIcon className={offering.guidedQuestionnaire ? "h-5 w-5 text-accent" : "h-5 w-5 text-muted"} />
+                <span className="text-sm font-medium text-ink">{dict.serviceTags[offering.tag]}</span>
                 <span
                   className={
-                    service.status === "active"
+                    offering.guidedQuestionnaire
                       ? "w-fit rounded bg-success-tint px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.04em] text-success"
                       : "w-fit rounded bg-bg-light px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.04em] text-muted"
                   }
                 >
-                  {service.status === "active" ? dict.home.availableNow : dict.home.comingSoon}
+                  {offering.guidedQuestionnaire ? dict.home.guidedAvailable : dict.home.directoryOnly}
+                </span>
+                <span className="font-mono text-[11px] text-muted">
+                  {fmt(dict.home.confirmedProvidersFmt, { count: offering.providerCount })}
                 </span>
               </div>
             ))}

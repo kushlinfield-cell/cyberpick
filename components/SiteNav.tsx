@@ -25,14 +25,13 @@ export default function SiteNav() {
   const navLinks = [
     { label: dict.nav.solutions, href: `/${locale}/#services` },
     { label: dict.nav.providers, href: `/${locale}/providers` },
-    { label: dict.nav.resources, href: `/${locale}/#buyer-first` },
     { label: dict.nav.howItWorks, href: `/${locale}/#how-it-works` },
   ];
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-navy/95 backdrop-blur supports-[backdrop-filter]:bg-navy/90">
       <div className="mx-auto flex max-w-content items-center justify-between px-6 py-4">
-        <Link href={`/${locale}`} className="text-base font-bold tracking-tight text-white">
+        <Link href={`/${locale}`} className="text-xl font-bold tracking-tight text-white">
           Cyber<span className="text-accent">Pick</span>
         </Link>
 

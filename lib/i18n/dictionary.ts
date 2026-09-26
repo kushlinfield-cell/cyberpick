@@ -49,6 +49,9 @@ export interface Dictionary {
     servicesSubcopy: string;
     availableNow: string;
     comingSoon: string;
+    guidedAvailable: string;
+    directoryOnly: string;
+    confirmedProvidersFmt: string; // "Confirmed providers: {count}"
     buyerEyebrow: string;
     buyerHeading: string;
     buyerSubcopy: string;
@@ -71,6 +74,7 @@ export interface Dictionary {
     step2Desc: string;
     serviceLabel: string;
     comingSoonSuffix: string;
+    otherCategoriesNote: string;
     step3Title: string;
     step3Desc: string;
     environmentLabel: string;
@@ -183,8 +187,29 @@ export interface Dictionary {
     requestBtn: string;
     preparedLabel: string;
     preparedNote: string;
+    preparedForFmt: string; // "We've noted this request for {name} ({email})."
     emptyMsg: string;
     backToMatches: string;
+    formHeading: string;
+    nameLabel: string;
+    emailLabel: string;
+    companyLabel: string;
+    phoneLabel: string;
+    roleLabel: string;
+    optional: string;
+    consentOperational: string;
+    consentMarketing: string;
+    consentRequiredError: string;
+    privacyLinkText: string;
+    demoBackendNote: string;
+  };
+  legal: {
+    draftBadge: string;
+    draftWarning: string;
+    privacyTitle: string;
+    privacyIntro: string;
+    sections: { heading: string; body: string }[];
+    backHome: string;
   };
   common: {
     languageSwitcherLabel: string;
@@ -194,5 +219,8 @@ export interface Dictionary {
     selected: string;
     confirmed: string;
     notPubliclyConfirmed: string;
+    stepRequirements: string;
+    stepMatches: string;
+    stepProposals: string;
   };
 }

@@ -85,11 +85,9 @@ export default function QuestionnairePage() {
               <Field label={q.serviceLabel}>
                 <div className="flex flex-wrap gap-2.5">
                   <PillToggle label="Managed Detection & Response" selected />
-                  {["SOC Services", "Penetration Testing", "Incident Response", "vCISO", "ISO 27001", "NIS2", "Cloud Security"].map((s) => (
-                    <PillToggle key={s} label={`${s} ${q.comingSoonSuffix}`} selected={false} disabled />
-                  ))}
                 </div>
               </Field>
+              <p className="text-[13px] leading-relaxed text-muted">{q.otherCategoriesNote}</p>
             </StepShell>
           )}
 

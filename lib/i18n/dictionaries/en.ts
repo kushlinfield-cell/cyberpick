@@ -80,9 +80,13 @@ export const en: Dictionary = {
       "Provider facts shown here are drawn from each provider's own public website, cited on their profile — not invented, and not verified against your specific requirements. Confirm directly with the provider.",
     servicesEyebrow: "Coverage",
     servicesHeading: "Cybersecurity services",
-    servicesSubcopy: "CyberPick starts with Managed Detection & Response. Additional service categories are planned.",
+    servicesSubcopy:
+      "Every category below has at least one real, sourced provider behind it. Managed Detection & Response has a full guided questionnaire; the rest are comparable through the provider directory.",
     availableNow: "Available now",
     comingSoon: "Coming soon",
+    guidedAvailable: "Guided questionnaire",
+    directoryOnly: "Browse in directory",
+    confirmedProvidersFmt: "Confirmed providers: {count}",
     buyerEyebrow: "Methodology",
     buyerHeading: "Built for the buyer.",
     buyerSubcopy:
@@ -127,9 +131,11 @@ export const en: Dictionary = {
     industries: ["Manufacturing", "Technology", "Financial services", "Healthcare", "Retail", "Other"],
     employeeBands: ["50–250 employees", "250–500 employees", "500–1,000 employees"],
     step2Title: "What do you need?",
-    step2Desc: "CyberPick currently covers Managed Detection & Response.",
+    step2Desc: "CyberPick currently guides you through Managed Detection & Response requirements.",
     serviceLabel: "Service",
     comingSoonSuffix: "— coming soon",
+    otherCategoriesNote:
+      "Need something else — SOC, incident response, threat hunting, penetration testing? You can compare real providers on those today in the provider directory; a guided questionnaire for them is next.",
     step3Title: "Your environment",
     step3Desc: "Select every platform and tool currently in use.",
     environmentLabel: "Environment — select all that apply",
@@ -270,12 +276,71 @@ export const en: Dictionary = {
       "Contract term",
       "References",
     ],
-    noteBeforeSend: "This is a prototype — clicking below prepares the request but does not send anything.",
+    noteBeforeSend: "This is a prototype — submitting below prepares the request locally but does not send anything.",
     requestBtn: "Request proposals",
     preparedLabel: "Request prepared",
     preparedNote: "In a live service, your procurement brief would now be shared with the selected providers.",
+    preparedForFmt: "We've noted this request for {name} ({email}).",
     emptyMsg: "No providers selected yet. Add at least one provider to your shortlist first.",
     backToMatches: "Back to matches",
+    formHeading: "Your details",
+    nameLabel: "Full name",
+    emailLabel: "Work email",
+    companyLabel: "Company",
+    phoneLabel: "Phone",
+    roleLabel: "Role",
+    optional: "optional",
+    consentOperational:
+      "I consent to CyberPick sharing this procurement brief and my contact details with the providers selected above, so they can respond to my request.",
+    consentMarketing:
+      "I'd also like occasional emails from CyberPick about new providers and procurement guidance. I can unsubscribe at any time.",
+    consentRequiredError: "Please confirm consent to share your brief with the selected providers before continuing.",
+    privacyLinkText: "Privacy policy",
+    demoBackendNote:
+      "Prototype note: this form validates and stores your answer only in this browser. Nothing is transmitted — a real deployment needs a backend, a lawful basis review, and a real privacy policy before collecting live leads.",
+  },
+  legal: {
+    draftBadge: "Draft — not legal advice",
+    draftWarning:
+      "This page is a structural placeholder generated for this prototype. It is not a real privacy policy, was not written or reviewed by a lawyer, and must not be published as-is. Before collecting any real personal data, have qualified counsel draft and review a privacy notice that accurately reflects what you actually collect, why, your legal basis, retention periods, and the rights available under GDPR and applicable national law.",
+    privacyTitle: "Privacy policy",
+    privacyIntro:
+      "This placeholder outlines the sections a real privacy policy for CyberPick would need. Every sentence below needs to be replaced with your organisation's actual practices.",
+    sections: [
+      {
+        heading: "Who we are",
+        body: "[Replace with the legal entity operating CyberPick, registered address, and contact details for data protection queries.]",
+      },
+      {
+        heading: "What we collect",
+        body: "[List the personal data actually collected — e.g. name, work email, phone, company, and the procurement brief — and from where.]",
+      },
+      {
+        heading: "Why we process it, and our legal basis",
+        body: "[State the purpose of each processing activity — e.g. fulfilling a proposal request under contract/legitimate interest, sending marketing under consent — and the specific GDPR Article 6 basis relied on.]",
+      },
+      {
+        heading: "Who we share it with",
+        body: "[Name the providers or categories of recipients data is shared with, e.g. the MDR/SOC providers a person selects, and any processors such as hosting or email providers.]",
+      },
+      {
+        heading: "International transfers",
+        body: "[Disclose whether any recipient is outside the EU/EEA and what safeguard applies, e.g. an adequacy decision or Standard Contractual Clauses.]",
+      },
+      {
+        heading: "How long we keep it",
+        body: "[State concrete retention periods per data category, and what happens at the end of that period.]",
+      },
+      {
+        heading: "Your rights",
+        body: "[Describe the rights available — access, rectification, erasure, restriction, portability, objection — and how to exercise them, including the right to complain to a supervisory authority.]",
+      },
+      {
+        heading: "Cookies and similar technologies",
+        body: "[Disclose any cookies or trackers used, their purpose, and how consent is obtained where required under the ePrivacy rules.]",
+      },
+    ],
+    backHome: "← Back to homepage",
   },
   common: {
     languageSwitcherLabel: "Language",
@@ -285,5 +350,8 @@ export const en: Dictionary = {
     selected: "selected",
     confirmed: "Confirmed",
     notPubliclyConfirmed: "Not publicly confirmed",
+    stepRequirements: "Requirements",
+    stepMatches: "Matches",
+    stepProposals: "Request proposals",
   },
 };
