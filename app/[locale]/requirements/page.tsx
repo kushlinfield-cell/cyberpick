@@ -1,9 +1,15 @@
+"use client";
+
 import SiteNav from "@/components/SiteNav";
 import ProcurementStepper from "@/components/ProcurementStepper";
 import Button from "@/components/Button";
 import { organisation, environment, coreRequirements, operational, providerResponseFields } from "@/lib/mock-data";
+import { useI18n } from "@/context/I18nContext";
 
 export default function RequirementsPage() {
+  const { locale, dict, country } = useI18n();
+  const r = dict.requirements;
+
   return (
     <>
       <SiteNav />
@@ -12,32 +18,30 @@ export default function RequirementsPage() {
       <main className="flex justify-center bg-bg-light px-6 py-16">
         <div className="flex w-full max-w-2xl flex-col gap-8">
           <div className="flex flex-col gap-2">
-            <span className="label-muted">Procurement brief</span>
-            <h1 className="text-3xl font-semibold tracking-tight text-ink">Your MDR requirements</h1>
-            <p className="text-[15px] leading-relaxed text-muted">
-              We&apos;ve turned your answers into a structured procurement brief.
-            </p>
+            <span className="label-muted">{r.eyebrow}</span>
+            <h1 className="text-3xl font-semibold tracking-tight text-ink">{r.title}</h1>
+            <p className="text-[15px] leading-relaxed text-muted">{r.subcopy}</p>
           </div>
 
           <div className="rounded-lg border border-border bg-white">
-            <BriefSection title="Organisation">
+            <BriefSection title={r.sectionOrganisation}>
               <span className="text-sm text-ink">
-                {organisation.country} · {organisation.industry} · {organisation.employees}
+                {country(organisation.country)} · {organisation.industry} · {organisation.employees}
               </span>
             </BriefSection>
-            <BriefSection title="Environment">
+            <BriefSection title={r.sectionEnvironment}>
               <TagRow items={environment} />
             </BriefSection>
-            <BriefSection title="Core requirements">
+            <BriefSection title={r.sectionCoreRequirements}>
               <TagRow items={coreRequirements} />
             </BriefSection>
-            <BriefSection title="Operational" last>
+            <BriefSection title={r.sectionOperational} last>
               <TagRow items={operational} />
             </BriefSection>
           </div>
 
           <div className="flex flex-col gap-4 rounded-lg border border-border bg-navy p-7">
-            <span className="eyebrow-light">What providers should respond with</span>
+            <span className="eyebrow-light">{r.providerAsk}</span>
             <ul className="grid grid-cols-1 gap-x-8 gap-y-2.5 sm:grid-cols-2">
               {providerResponseFields.map((field) => (
                 <li key={field} className="flex items-center gap-2.5 text-sm text-white/85">
@@ -49,10 +53,10 @@ export default function RequirementsPage() {
           </div>
 
           <div className="flex justify-end gap-3 border-t border-border pt-6">
-            <Button href="/questionnaire" variant="secondary">
-              Edit requirements
+            <Button href={`/${locale}/questionnaire`} variant="secondary">
+              {r.editRequirements}
             </Button>
-            <Button href="/matches">Find matching providers</Button>
+            <Button href={`/${locale}/matches`}>{r.findProviders}</Button>
           </div>
         </div>
       </main>

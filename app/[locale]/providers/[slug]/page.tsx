@@ -4,15 +4,18 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import clsx from "clsx";
 import SiteNav from "@/components/SiteNav";
-import { getProvider, capabilityScore } from "@/lib/mock-data";
+import { getProvider, confirmedServiceCount, allPresenceCountries } from "@/lib/mock-data";
 import { useShortlist } from "@/context/ShortlistContext";
 import { CheckIcon } from "@/components/Icons";
 import CapabilityList from "@/components/CapabilityList";
+import { useI18n } from "@/context/I18nContext";
 
 export default function ProviderDetailPage() {
   const params = useParams<{ slug: string }>();
   const provider = getProvider(params.slug);
   const { isShortlisted, toggleShortlist } = useShortlist();
+  const { locale, dict, country, fmt } = useI18n();
+  const p = dict.providerProfile;
 
   if (!provider) {
     return (
@@ -20,9 +23,9 @@ export default function ProviderDetailPage() {
         <SiteNav />
         <main className="mx-auto max-w-content px-6 py-20">
           <p className="text-sm text-muted">
-            We couldn&apos;t find that provider.{" "}
-            <Link href="/matches" className="text-accent">
-              Back to matched providers
+            {p.notFound}{" "}
+            <Link href={`/${locale}/matches`} className="text-accent">
+              {p.backToMatches}
             </Link>
           </p>
         </main>
@@ -31,7 +34,8 @@ export default function ProviderDetailPage() {
   }
 
   const shortlisted = isShortlisted(provider.slug);
-  const { met, total } = capabilityScore(provider);
+  const { met, total } = confirmedServiceCount(provider);
+  const otherCountries = allPresenceCountries(provider).filter((c) => c !== provider.hqCountry);
 
   return (
     <>
@@ -39,8 +43,8 @@ export default function ProviderDetailPage() {
 
       <div className="border-b border-border bg-white">
         <div className="mx-auto max-w-content px-6 py-4">
-          <Link href="/matches" className="font-mono text-xs text-muted">
-            ← Back to results
+          <Link href={`/${locale}/matches`} className="font-mono text-xs text-muted">
+            {p.backToResults}
           </Link>
         </div>
       </div>
@@ -50,11 +54,12 @@ export default function ProviderDetailPage() {
           <div className="flex flex-col gap-4 rounded-t-lg border border-b-0 border-border bg-white p-8 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex flex-col gap-2">
               <span className="w-fit rounded bg-bg-light px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.04em] text-muted">
-                Demonstration provider
+                {p.realProviderLabel}
               </span>
               <h1 className="text-3xl font-semibold tracking-tight text-ink">{provider.name}</h1>
               <p className="text-[15px] text-muted">
-                {provider.city}, {provider.country} · {provider.tagline}
+                {provider.hqCity ? `${provider.hqCity}, ` : ""}
+                {country(provider.hqCountry)} · {provider.tagline}
               </p>
             </div>
             <span
@@ -63,82 +68,72 @@ export default function ProviderDetailPage() {
                 met === total ? "bg-success-tint text-success" : "bg-bg-light text-ink"
               )}
             >
-              {met} / {total} required capabilities
+              {fmt(p.confirmedFmt, { met, total })}
             </span>
           </div>
 
           <div className="flex flex-col border border-border bg-white">
-            <Section title="Overview">
+            <Section title={p.overview}>
               <p className="text-[15px] leading-relaxed text-ink">{provider.overview}</p>
             </Section>
 
-            <Section title="Customer fit">
-              <p className="text-sm leading-relaxed text-ink">{provider.customerFit}</p>
-              <p className="mt-2 text-xs text-muted">Company size fit: {provider.companySizeFit}</p>
+            {provider.notableFacts.length > 0 && (
+              <Section title={p.notableFacts}>
+                <ul className="flex flex-col gap-1.5">
+                  {provider.notableFacts.map((fact) => (
+                    <li key={fact} className="flex items-start gap-2 text-sm leading-relaxed text-ink">
+                      <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent" />
+                      {fact}
+                    </li>
+                  ))}
+                </ul>
+              </Section>
+            )}
+
+            <Section title={p.presence}>
+              <Row label={p.hqLabel} value={`${provider.hqCity ? provider.hqCity + ", " : ""}${country(provider.hqCountry)}`} />
+              {otherCountries.length > 0 && (
+                <Row label={p.otherCountriesLabel} value={otherCountries.map((c) => country(c)).join(", ")} />
+              )}
+              {provider.founded && <Row label={p.foundedLabel} value={provider.founded} />}
+              {provider.parentOrg && <Row label={p.parentOrgLabel} value={provider.parentOrg} last />}
             </Section>
 
-            <Section title="Services">
+            <Section title={p.confirmedServices}>
+              <CapabilityList provider={provider} />
+            </Section>
+
+            <Section title={p.languagesLabel}>
               <div className="flex flex-wrap gap-2">
-                {provider.serviceList.map((s) => (
-                  <Chip key={s}>{s}</Chip>
-                ))}
-              </div>
-            </Section>
-
-            <Section title="Technology">
-              <Row label="Primary detection stack" value={provider.technology.primary} />
-              <div className="mt-3 flex flex-wrap gap-2">
-                {provider.technology.supported.map((t) => (
-                  <Chip key={t} mono>
-                    {t}
-                  </Chip>
-                ))}
-              </div>
-            </Section>
-
-            <Section title="Operations">
-              <Row label="SOC location" value={provider.operations.socLocation} />
-              <Row label="Monitoring model" value={provider.operations.monitoringModel} />
-              <Row label="Incident response SLA" value={provider.operations.responseSla} />
-              <Row label="Included IR hours" value={provider.operations.includedIrHours} />
-              <Row label="Reporting" value={provider.operations.reporting} last />
-            </Section>
-
-            <Section title="Languages">
-              <div className="flex flex-wrap gap-2">
-                {provider.languages.map((l) => (
+                {provider.languagesConfirmed.map((l) => (
                   <Chip key={l}>{l}</Chip>
                 ))}
               </div>
             </Section>
 
-            <Section title="Data handling">
-              <Row label="Data residency" value={provider.dataHandling.residency} />
-              <Row label="Hosted in" value={provider.dataHandling.hostedIn} last />
-              <p className="mt-3 text-[13px] leading-relaxed text-muted">{provider.dataHandling.note}</p>
-            </Section>
-
-            <Section title="Commercial information">
-              <Row label="Pricing model" value={provider.commercial.pricingModel} />
-              <Row label="Setup cost" value={provider.commercial.setupCost} />
-              <Row label="Minimum contract term" value={provider.commercial.minimumTerm} />
-              <Row label="Onboarding" value={provider.commercial.onboarding} last />
-            </Section>
-
-            <Section title="Your requirements" last>
-              <CapabilityList provider={provider} />
+            <Section title={p.sourcesLabel} last>
+              <ul className="flex flex-col gap-1.5">
+                {provider.sources.map((s) => (
+                  <li key={s.url}>
+                    <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-sm text-accent underline underline-offset-2">
+                      {s.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-2 text-[11px] text-muted">{p.lastChecked}</p>
             </Section>
           </div>
 
           <div className="flex flex-col gap-4 rounded-b-lg border border-t-0 border-border bg-white p-8">
             <div className="flex items-center justify-between gap-4">
-              <p className="max-w-sm text-xs text-muted">
-                Shortlisted providers receive the same standardized request for proposals, built from your
-                requirements brief.
-              </p>
+              <p className="max-w-sm text-xs text-muted">{p.footerNote}</p>
               <div className="flex shrink-0 gap-3">
-                <Link href="/matches" className="inline-flex items-center rounded-md border border-border-strong bg-white px-5 py-3 text-sm font-medium text-ink hover:bg-bg-light">
-                  Back to results
+                <Link
+                  href={`/${locale}/matches`}
+                  className="inline-flex items-center rounded-md border border-border-strong bg-white px-5 py-3 text-sm font-medium text-ink hover:bg-bg-light"
+                >
+                  {p.backToMatches}
                 </Link>
                 <button
                   type="button"
@@ -150,13 +145,11 @@ export default function ProviderDetailPage() {
                   )}
                 >
                   {shortlisted && <CheckIcon className="h-4 w-4" />}
-                  {shortlisted ? "Added to shortlist" : "Add to shortlist"}
+                  {shortlisted ? p.added : p.addToShortlist}
                 </button>
               </div>
             </div>
-            <p className="border-t border-border pt-4 text-xs text-muted">
-              Information shown in this prototype is fictional and for demonstration purposes only.
-            </p>
+            <p className="border-t border-border pt-4 text-xs text-muted">{p.disclaimer}</p>
           </div>
         </div>
       </main>
@@ -177,15 +170,11 @@ function Row({ label, value, last }: { label: string; value: string; last?: bool
   return (
     <div className={clsx("flex items-baseline justify-between gap-6 py-2.5 text-sm", !last && "border-b border-border")}>
       <span className="text-muted">{label}</span>
-      <span className="text-right font-mono text-[13px] text-ink">{value}</span>
+      <span className="text-right text-[13px] text-ink">{value}</span>
     </div>
   );
 }
 
-function Chip({ children, mono }: { children: React.ReactNode; mono?: boolean }) {
-  return (
-    <span className={clsx("rounded border border-border bg-bg-light px-2.5 py-1 text-xs text-ink", mono && "font-mono")}>
-      {children}
-    </span>
-  );
+function Chip({ children }: { children: React.ReactNode }) {
+  return <span className="rounded border border-border bg-bg-light px-2.5 py-1 text-xs text-ink">{children}</span>;
 }

@@ -7,11 +7,14 @@ import ProcurementStepper from "@/components/ProcurementStepper";
 import BriefSummaryBar from "@/components/BriefSummaryBar";
 import ShortlistTray from "@/components/ShortlistTray";
 import ProviderCard from "@/components/ProviderCard";
-import { providers, CAPABILITY_ORDER, CAPABILITY_LABELS, capabilityScore } from "@/lib/mock-data";
+import { providers, SERVICE_TAG_ORDER, confirmedServiceCount } from "@/lib/mock-data";
 import { CheckIcon, DashIcon } from "@/components/Icons";
+import { useI18n } from "@/context/I18nContext";
 
 export default function MatchesPage() {
   const [view, setView] = useState<"cards" | "compare">("cards");
+  const { dict, fmt } = useI18n();
+  const m = dict.matches;
 
   return (
     <>
@@ -23,22 +26,17 @@ export default function MatchesPage() {
         <div className="mx-auto flex max-w-content flex-col gap-8">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div className="flex flex-col gap-2">
-              <span className="label-muted">Demonstration data</span>
-              <h1 className="text-3xl font-semibold tracking-tight text-ink">
-                Providers matching your requirements
-              </h1>
-              <p className="max-w-xl text-[15px] text-muted">
-                Each provider below is measured against the same 8 capabilities from your brief. Matching is based
-                on stated capabilities, not a paid ranking.
-              </p>
+              <span className="label-muted">{m.eyebrow}</span>
+              <h1 className="text-3xl font-semibold tracking-tight text-ink">{m.title}</h1>
+              <p className="max-w-xl text-[15px] text-muted">{m.subcopy}</p>
             </div>
 
             <div className="flex shrink-0 gap-1 rounded-md border border-border-strong bg-white p-1">
               <ViewButton active={view === "cards"} onClick={() => setView("cards")}>
-                Cards
+                {m.cardsBtn}
               </ViewButton>
               <ViewButton active={view === "compare"} onClick={() => setView("compare")}>
-                Compare
+                {m.compareBtn}
               </ViewButton>
             </div>
           </div>
@@ -51,32 +49,30 @@ export default function MatchesPage() {
             </div>
           ) : (
             <div className="overflow-x-auto rounded-lg border border-border bg-white">
-              <table className="w-full min-w-[640px] border-collapse text-sm">
+              <table className="w-full min-w-[960px] border-collapse text-sm">
                 <thead>
                   <tr>
                     <th className="label-muted border-b border-border px-6 py-4 text-left font-medium">
-                      Capability
+                      {m.tableServiceHeader}
                     </th>
                     {providers.map((p) => {
-                      const { met, total } = capabilityScore(p);
+                      const { met, total } = confirmedServiceCount(p);
                       return (
                         <th key={p.slug} className="border-b border-border px-6 py-4 text-left">
                           <div className="text-sm font-semibold text-ink">{p.name}</div>
-                          <div className="font-mono text-xs text-muted">
-                            {met} / {total} capabilities
-                          </div>
+                          <div className="font-mono text-xs text-muted">{fmt(m.confirmedFmt, { met, total })}</div>
                         </th>
                       );
                     })}
                   </tr>
                 </thead>
                 <tbody>
-                  {CAPABILITY_ORDER.map((key) => (
-                    <tr key={key}>
-                      <td className="label-muted border-b border-border px-6 py-4">{CAPABILITY_LABELS[key]}</td>
+                  {SERVICE_TAG_ORDER.map((tag) => (
+                    <tr key={tag}>
+                      <td className="label-muted border-b border-border px-6 py-4">{dict.serviceTags[tag]}</td>
                       {providers.map((p) => (
                         <td key={p.slug} className="border-b border-border px-6 py-4">
-                          {p.capabilities[key] ? (
+                          {p.confirmedServices.includes(tag) ? (
                             <CheckIcon className="h-4 w-4 text-success" />
                           ) : (
                             <DashIcon className="h-4 w-4 text-muted" />
@@ -89,6 +85,8 @@ export default function MatchesPage() {
               </table>
             </div>
           )}
+
+          <p className="text-xs text-muted">{m.localPresenceNote}</p>
         </div>
       </main>
 
@@ -97,15 +95,7 @@ export default function MatchesPage() {
   );
 }
 
-function ViewButton({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
+function ViewButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
     <button
       type="button"

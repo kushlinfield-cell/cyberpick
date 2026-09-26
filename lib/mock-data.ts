@@ -1,6 +1,22 @@
-// All data in this file is fictional and for demonstration purposes only.
-// It represents the prototype's scripted scenario (a Finnish manufacturing
-// company, 250–500 employees, evaluating MDR providers).
+// ─────────────────────────────────────────────────────────────────────────
+// PROVIDER DATA — real companies, public information only.
+//
+// Every fact below (headquarters, confirmed office locations, service
+// tags, notable facts) is drawn from that provider's own public website
+// or a public news source, cited in `sources`. Nothing about SLAs,
+// pricing, contract terms, or exact compliance posture is invented —
+// where a provider does not publicly state something (e.g. exact
+// incident-response SLA, pricing model, EU/EEA-only data residency),
+// it is simply left out rather than guessed. Overview text is our own
+// paraphrase of what each provider publishes about itself, not the
+// provider's official marketing copy, and was last checked in
+// September 2026. Provider information may change — always confirm
+// directly with the provider before relying on any of this.
+//
+// The BUYER scenario below (organisation/environment/requirements) is
+// the prototype's fictional demonstration persona and is not a real
+// company.
+// ─────────────────────────────────────────────────────────────────────────
 
 export const organisation = {
   country: "Finland",
@@ -11,10 +27,10 @@ export const organisation = {
 export const environment = ["Microsoft 365", "Azure", "Microsoft Defender"];
 
 export const coreRequirements = [
-  "24/7 monitoring",
-  "Threat detection and triage",
+  "24/7 monitoring (SOC)",
   "Incident response",
   "Threat hunting",
+  "Threat intelligence",
 ];
 
 export const operational = [
@@ -40,13 +56,13 @@ export const briefSections = [
 ];
 
 export const providerResponseFields = [
-  "SOC location",
-  "Monitoring model",
-  "Supported technologies",
+  "SOC location(s)",
+  "Monitoring model (24/7 confirmation)",
+  "Supported technologies / SIEM-EDR stack",
   "Incident response SLA",
-  "Included IR hours",
-  "Onboarding process",
-  "Implementation timeline",
+  "Included IR hours or scope",
+  "Onboarding process & timeline",
+  "Data residency / hosting location",
   "Monthly recurring price",
   "Setup cost",
   "Minimum contract term",
@@ -55,10 +71,11 @@ export const providerResponseFields = [
 
 export const proposalRequestFields = [
   "Service model",
-  "SOC location",
+  "SOC location(s)",
   "Technology compatibility",
   "Incident response SLA",
-  "Implementation",
+  "Data residency",
+  "Implementation timeline",
   "Monthly price",
   "Setup cost",
   "Contract term",
@@ -77,220 +94,229 @@ export const services: { name: string; status: ServiceStatus }[] = [
   { name: "Cloud Security", status: "soon" },
 ];
 
-export type CapabilityKey =
-  | "soc247"
-  | "sentinel"
-  | "defender"
+// ─────────────────────────────────────────────────────────────────────────
+// Confirmed service tags — only assigned where a provider's own public
+// materials explicitly describe that capability. Absence of a tag means
+// "not publicly confirmed by our research," not "the provider doesn't
+// offer this."
+// ─────────────────────────────────────────────────────────────────────────
+
+export type ServiceTag =
+  | "mdr"
+  | "soc"
   | "incidentResponse"
   | "threatHunting"
-  | "euEeaData"
-  | "englishSupport"
-  | "customerFit";
+  | "threatIntelligence"
+  | "otSecurity"
+  | "penetrationTesting"
+  | "microsoftSentinel"
+  | "advisoryCompliance";
 
-export const CAPABILITY_LABELS: Record<CapabilityKey, string> = {
-  soc247: "24/7 SOC",
-  sentinel: "Microsoft Sentinel",
-  defender: "Microsoft Defender",
-  incidentResponse: "Incident response",
-  threatHunting: "Threat hunting",
-  euEeaData: "EU/EEA data handling",
-  englishSupport: "English support",
-  customerFit: "Customer-size fit",
-};
-
-export const CAPABILITY_ORDER: CapabilityKey[] = [
-  "soc247",
-  "sentinel",
-  "defender",
+export const SERVICE_TAG_ORDER: ServiceTag[] = [
+  "mdr",
+  "soc",
   "incidentResponse",
   "threatHunting",
-  "euEeaData",
-  "englishSupport",
-  "customerFit",
+  "threatIntelligence",
+  "otSecurity",
+  "penetrationTesting",
+  "microsoftSentinel",
+  "advisoryCompliance",
 ];
+
+export const SERVICE_TAG_LABELS: Record<ServiceTag, string> = {
+  mdr: "Managed Detection & Response",
+  soc: "SOC / continuous monitoring",
+  incidentResponse: "Incident response",
+  threatHunting: "Threat hunting",
+  threatIntelligence: "Threat intelligence",
+  otSecurity: "OT / industrial security",
+  penetrationTesting: "Penetration testing / red team",
+  microsoftSentinel: "Microsoft Sentinel integration",
+  advisoryCompliance: "Advisory & compliance",
+};
 
 export type Provider = {
   slug: string;
   name: string;
+  hqCity?: string;
+  hqCountry: string;
+  otherCountries: string[];
+  founded?: string;
+  parentOrg?: string;
   tagline: string;
-  city: string;
-  country: string;
-  capabilities: Record<CapabilityKey, boolean>;
   overview: string;
-  customerFit: string;
-  serviceList: string[];
-  technology: {
-    primary: string;
-    supported: string[];
-  };
-  operations: {
-    socLocation: string;
-    monitoringModel: string;
-    responseSla: string;
-    includedIrHours: string;
-    reporting: string;
-    serviceManager: string;
-  };
-  languages: string[];
-  dataHandling: {
-    residency: string;
-    hostedIn: string;
-    note: string;
-  };
-  commercial: {
-    pricingModel: string;
-    setupCost: string;
-    minimumTerm: string;
-    onboarding: string;
-  };
-  companySizeFit: string;
-  sizeBand: "50–500 employees" | "500–2,000 employees" | "2,000+ employees";
+  confirmedServices: ServiceTag[];
+  notableFacts: string[];
+  languagesConfirmed: string[];
+  sources: { label: string; url: string }[];
 };
 
 export const providers: Provider[] = [
   {
-    slug: "northshield-security",
-    name: "NorthShield Security",
-    tagline: "Nordic-native MDR & SOC",
-    city: "Helsinki",
-    country: "Finland",
-    capabilities: {
-      soc247: true,
-      sentinel: true,
-      defender: true,
-      incidentResponse: true,
-      threatHunting: true,
-      euEeaData: true,
-      englishSupport: true,
-      customerFit: true,
-    },
+    slug: "withsecure",
+    name: "WithSecure",
+    hqCity: "Helsinki",
+    hqCountry: "Finland",
+    otherCountries: [],
+    parentOrg: undefined,
+    tagline: "Finnish cybersecurity vendor, formerly F-Secure Business",
     overview:
-      "NorthShield Security operates a Nordic-based SOC built around Microsoft Defender and Microsoft Sentinel, with a customer base concentrated in Finnish and Swedish mid-market companies. Monitoring, detection and incident response are delivered from Helsinki.",
-    customerFit:
-      "Built for mid-market companies (roughly 50–1,000 employees) with a Microsoft-centred environment — a close fit for a 250–500 employee manufacturing company running Microsoft 365, Azure and Defender.",
-    serviceList: ["Managed Detection & Response", "SOC Services", "Incident Response"],
-    technology: {
-      primary: "Microsoft Defender XDR, Microsoft Sentinel",
-      supported: ["Microsoft 365", "Azure AD / Entra ID", "Microsoft Defender", "Microsoft Sentinel"],
-    },
-    operations: {
-      socLocation: "Helsinki, Finland",
-      monitoringModel: "24/7/365, in-house SOC analysts",
-      responseSla: "Under 15 minutes, critical severity",
-      includedIrHours: "20 hours / month included",
-      reporting: "Monthly reporting, named service manager",
-      serviceManager: "Named service manager included",
-    },
-    languages: ["English", "Finnish", "Swedish"],
-    dataHandling: {
-      residency: "EU / EEA only",
-      hostedIn: "Finland, Sweden",
-      note: "All customer telemetry and logs are processed and stored within the EU/EEA by default.",
-    },
-    commercial: {
-      pricingModel: "Per-endpoint, monthly — tiered by coverage level",
-      setupCost: "One-time onboarding fee, scoped per environment",
-      minimumTerm: "12 months",
-      onboarding: "Typical onboarding: 4–6 weeks",
-    },
-    companySizeFit: "50–1,000 employees",
-    sizeBand: "50–500 employees",
+      "WithSecure is a Finnish cybersecurity company (the former enterprise business of F-Secure, renamed WithSecure in 2022) that publishes a dedicated Managed Detection & Response product and a broader \"Co-Security\" managed-services offering. We could not confirm presence outside Finland in this research pass — WithSecure operates internationally, but we did not verify specific country offices, so none are listed here.",
+    confirmedServices: ["mdr"],
+    notableFacts: ["Formerly F-Secure's business security division, renamed WithSecure in 2022."],
+    languagesConfirmed: ["English", "Finnish"],
+    sources: [
+      { label: "WithSecure — Managed Detection and Response", url: "https://www.withsecure.com/fi/solutions/managed-services/withsecure-managed-detection-and-response" },
+      { label: "WithSecure — Co-Security Services", url: "https://www.withsecure.com/en/for-business/platform/co-security/" },
+      { label: "WithSecure — About us", url: "https://www.withsecure.com/en/about-us/" },
+    ],
   },
   {
-    slug: "arctic-defense-group",
-    name: "Arctic Defense Group",
-    tagline: "Pan-Nordic MDR provider",
-    city: "Stockholm",
-    country: "Sweden",
-    capabilities: {
-      soc247: true,
-      sentinel: false,
-      defender: true,
-      incidentResponse: true,
-      threatHunting: true,
-      euEeaData: true,
-      englishSupport: true,
-      customerFit: true,
-    },
+    slug: "truesec",
+    name: "Truesec",
+    hqCity: "Stockholm",
+    hqCountry: "Sweden",
+    otherCountries: ["Denmark", "Finland", "Germany"],
+    tagline: "Nordic MDR and incident-response specialist",
     overview:
-      "Arctic Defense Group runs a multi-vendor MDR service from Stockholm, covering the broader Nordic region. It supports Microsoft Defender directly but uses its own SIEM/XDR layer rather than Microsoft Sentinel.",
-    customerFit:
-      "Serves mid-market and larger companies across the Nordics. A workable fit for a 250–500 employee company, though its detection layer is not built natively on Microsoft Sentinel.",
-    serviceList: ["Managed Detection & Response", "SOC Services"],
-    technology: {
-      primary: "Proprietary XDR with Microsoft Defender integration",
-      supported: ["Microsoft 365", "Azure AD / Entra ID", "Microsoft Defender", "CrowdStrike"],
-    },
-    operations: {
-      socLocation: "Stockholm, Sweden",
-      monitoringModel: "24/7, SOC with on-call escalation tier",
-      responseSla: "Under 30 minutes, critical severity",
-      includedIrHours: "10 hours / month included",
-      reporting: "Monthly reporting",
-      serviceManager: "Named service manager on enterprise tier only",
-    },
-    languages: ["English", "Swedish"],
-    dataHandling: {
-      residency: "EU / EEA only",
-      hostedIn: "Sweden",
-      note: "Data is hosted in Sweden by default across all service tiers.",
-    },
-    commercial: {
-      pricingModel: "Flat monthly retainer, tiered by employee count",
-      setupCost: "One-time onboarding fee",
-      minimumTerm: "12 months",
-      onboarding: "Typical onboarding: 3–5 weeks",
-    },
-    companySizeFit: "100–2,000 employees",
-    sizeBand: "500–2,000 employees",
+      "Truesec describes its MDR offering as including 24/7 expert SOC monitoring, an incident-response team, custom detection logic across EDR/SIEM/NDR, threat intelligence, and dedicated OT (industrial systems) protection. Truesec states it operates offices in Stockholm and Malmö (Sweden), Copenhagen and Aarhus (Denmark), Espoo (Finland), and Munich (Germany), and describes itself as operating \"the largest and most advanced Security Operations Center (SOC) in the Nordic region.\"",
+    confirmedServices: ["mdr", "soc", "incidentResponse", "threatIntelligence", "otSecurity"],
+    notableFacts: ['Self-described as operating "the largest and most advanced SOC in the Nordic region."'],
+    languagesConfirmed: ["English", "Swedish", "Danish", "Finnish", "German"],
+    sources: [{ label: "Truesec — Managed Detection and Response", url: "https://www.truesec.com/service/managed-detection-and-response" }],
   },
   {
-    slug: "sentinel-harbor",
-    name: "Sentinel Harbor",
-    tagline: "Enterprise MDR & SOC",
-    city: "Copenhagen",
-    country: "Denmark",
-    capabilities: {
-      soc247: true,
-      sentinel: true,
-      defender: true,
-      incidentResponse: true,
-      threatHunting: true,
-      euEeaData: false,
-      englishSupport: true,
-      customerFit: false,
-    },
+    slug: "mnemonic",
+    name: "mnemonic",
+    hqCity: "Oslo",
+    hqCountry: "Norway",
+    otherCountries: ["Sweden", "Denmark", "Netherlands", "United Kingdom"],
+    founded: "2000",
+    tagline: "Independent Norwegian SOC and incident-response provider",
     overview:
-      "Sentinel Harbor is a larger, enterprise-oriented MDR and SOC provider headquartered in Copenhagen, with a follow-the-sun operating model. EU/EEA-only data handling is available as an add-on rather than the default configuration.",
-    customerFit:
-      "Built primarily for larger enterprise estates. Workable for a 250–500 employee company, but pricing, onboarding and minimum commitments are scaled for bigger organisations.",
-    serviceList: ["Managed Detection & Response", "SOC Services", "Incident Response"],
-    technology: {
-      primary: "Microsoft Sentinel, Microsoft Defender XDR",
-      supported: ["Microsoft 365", "Azure AD / Entra ID", "Microsoft Defender", "Microsoft Sentinel", "AWS"],
-    },
-    operations: {
-      socLocation: "Copenhagen, Denmark (follow-the-sun)",
-      monitoringModel: "24/7, global SOC handoff model",
-      responseSla: "Under 20 minutes, critical severity",
-      includedIrHours: "15 hours / month included",
-      reporting: "Monthly reporting, named service manager",
-      serviceManager: "Named service manager included",
-    },
-    languages: ["English"],
-    dataHandling: {
-      residency: "EU/EEA available as an add-on, not default",
-      hostedIn: "Primary hosting outside EU/EEA; EU/EEA add-on available",
-      note: "Standard service does not guarantee EU/EEA-only handling — confirm this explicitly if required.",
-    },
-    commercial: {
-      pricingModel: "Custom enterprise quote",
-      setupCost: "Scoped per engagement, typically higher for smaller estates",
-      minimumTerm: "24 months",
-      onboarding: "Typical onboarding: 6–10 weeks",
-    },
-    companySizeFit: "500–5,000+ employees",
-    sizeBand: "2,000+ employees",
+      "mnemonic is an independent Norwegian security company founded in 2000, with offices in Oslo, Stavanger and Trondheim (Norway), Kista (Sweden), Copenhagen (Denmark), Utrecht (Netherlands) and London (UK). It publicly describes its services as 24/7 threat detection and response, threat intelligence, incident response and ethical hacking (MDR sold under the \"Argus Managed Defence\" name), and states it serves as an advisor to Europol.",
+    confirmedServices: ["mdr", "soc", "incidentResponse", "threatIntelligence", "penetrationTesting"],
+    notableFacts: ["Advisor to Europol.", "Approx. 450 employees (as of 2025)."],
+    languagesConfirmed: ["English"],
+    sources: [
+      { label: "mnemonic — Managed Detection and Response", url: "https://www.mnemonic.io/solutions/managed-detection-and-response/" },
+      { label: "Wikipedia — mnemonic (company)", url: "https://en.wikipedia.org/wiki/Mnemonic_(company)" },
+    ],
+  },
+  {
+    slug: "csis-security-group",
+    name: "CSIS Security Group",
+    hqCity: "Copenhagen",
+    hqCountry: "Denmark",
+    otherCountries: [],
+    parentOrg: "Part of Allurity, a Nordic cybersecurity group (acquired 2024)",
+    tagline: "Danish threat-intelligence-led MDR provider",
+    overview:
+      "CSIS Security Group is a Danish cybersecurity company, now part of the Nordic cybersecurity group Allurity. CSIS publicly describes tiered MDR packages (Base / Pro / Elite) including 24/7 monitoring and response, incident response, threat hunting (Pro and Elite tiers), integrated and enhanced threat intelligence, and \"150+ custom rules for Microsoft Sentinel\" built by its research and incident-response teams. We did not find explicit confirmation of office locations beyond Denmark on CSIS's own site — its parent group, Allurity, operates more broadly across the Nordics, but that is a fact about the parent group, not confirmed for CSIS specifically.",
+    confirmedServices: ["mdr", "soc", "incidentResponse", "threatHunting", "threatIntelligence", "microsoftSentinel"],
+    notableFacts: ["Acquired by Allurity in 2024.", "Publishes 150+ custom detection rules for Microsoft Sentinel."],
+    languagesConfirmed: ["English"],
+    sources: [
+      { label: "CSIS — Managed Detection and Response", url: "https://www.csis.com/managed-detection-and-response/" },
+      { label: "Allurity acquires CSIS Security Group", url: "https://www.csis.com/whats-new/csis-s-latest-news-and-announcements/allurity-acquires-csis-security-group" },
+    ],
+  },
+  {
+    slug: "sentor",
+    name: "Sentor",
+    hqCity: "Stockholm",
+    hqCountry: "Sweden",
+    otherCountries: [],
+    parentOrg: "Part of Accenture (acquired 2021)",
+    tagline: "Swedish SOC and offensive/defensive security specialist",
+    overview:
+      "Sentor is a Swedish security services company, acquired by Accenture in 2021 to strengthen its Nordic cyber-defense practice. Sentor publicly organises its services into four areas: advisory (risk assessments, compliance, ISMS, privacy, employee training), detection & response (RedSOC red-team operations and BlueSOC 24/7 monitoring, managed SIEM, network monitoring and EDR), security testing (it describes itself as running \"Sweden's largest group of ethical hackers,\" covering red-team, penetration, application and cloud testing, code review and social engineering assessments), and support services (CISO-as-a-service, data-protection management, forensics and incident response). It lists offices in Stockholm, Gothenburg and Malmö, all in Sweden.",
+    confirmedServices: ["soc", "incidentResponse", "penetrationTesting", "advisoryCompliance"],
+    notableFacts: ['Describes itself as running "Sweden\'s largest group of ethical hackers."'],
+    languagesConfirmed: ["English", "Swedish"],
+    sources: [
+      { label: "Sentor — Our services", url: "https://www.sentorsecurity.com/services/" },
+      { label: "Accenture acquires Sentor", url: "https://newsroom.accenture.com/news/2021/accenture-acquires-sentor-enhancing-its-cyber-defense-and-managed-security-services-in-sweden" },
+    ],
+  },
+  {
+    slug: "dnv-cyber-nixu",
+    name: "DNV Cyber (formerly Nixu)",
+    hqCity: "Espoo",
+    hqCountry: "Finland",
+    otherCountries: ["Norway", "Sweden", "Denmark", "Netherlands", "Germany", "Romania", "United Kingdom", "France", "Greece", "Singapore"],
+    parentOrg: "Part of DNV, following a 2024 merger with Applied Risk",
+    tagline: "Finnish-founded SOC/consulting brand, now part of DNV Cyber",
+    overview:
+      "Nixu is a Finnish security company that served customers \"in Finland and across the Nordics\" for three decades before merging with Applied Risk and DNV in 2024 to form DNV Cyber, described as \"the fastest growing European cybersecurity services business.\" DNV Cyber's materials reference a security operations centre (SOC) in Espoo (near Helsinki) and describe IT and OT (industrial) cybersecurity solutions delivered across a wide European and international footprint. Because this is now a merged, larger entity, the country list below reflects DNV Cyber's broader footprint rather than Nixu's historical Finland/Nordics-only presence.",
+    confirmedServices: ["soc", "otSecurity"],
+    notableFacts: ["Formed in 2024 from the merger of Nixu, Applied Risk and DNV."],
+    languagesConfirmed: ["English"],
+    sources: [{ label: "DNV — Nixu is DNV Cyber", url: "https://www.dnv.com/cyber/about/nixu/" }],
+  },
+  {
+    slug: "advania",
+    name: "Advania",
+    hqCity: "Reykjavik",
+    hqCountry: "Iceland",
+    otherCountries: ["Sweden", "Norway", "Denmark", "Finland", "United Kingdom"],
+    tagline: "Pan-Nordic IT services group with a dedicated Cyber Defense Center",
+    overview:
+      "Advania is a Nordic IT services group headquartered in Reykjavik, Iceland, with subsidiaries across Sweden, Norway, Denmark, Finland and the UK. Its Norwegian SOC offering, the Advania Cyber Defense Center (ACDC), publicly describes round-the-clock (\"døgnkontinuerlig\") monitoring of infrastructure and services, an integrated incident-response team (IRT), intelligence assessments and periodic reviews, and mentions collaboration with Norwegian national security authorities. We reviewed Advania's Norway-specific SOC page; capability details may vary by country subsidiary.",
+    confirmedServices: ["soc", "incidentResponse"],
+    notableFacts: ["Publicly references collaboration with Norwegian national security authorities on its Norway SOC page."],
+    languagesConfirmed: ["English", "Norwegian"],
+    sources: [{ label: "Advania Norway — SOC", url: "https://www.advania.no/produkter-tjenester/it-sikkerhet/soc" }],
+  },
+  {
+    slug: "orange-cyberdefense",
+    name: "Orange Cyberdefense",
+    hqCity: "Paris (La Défense)",
+    hqCountry: "France",
+    otherCountries: ["Sweden", "Norway", "Denmark"],
+    parentOrg: "Business unit of the Orange Group",
+    tagline: "Pan-European MSSP with dedicated Nordic operations",
+    overview:
+      "Orange Cyberdefense is the cybersecurity business unit of the French Orange Group, headquartered in Paris. It publicly states it runs 18 SOCs worldwide with sales and services support in 160 countries, and maintains dedicated country pages/operations for Sweden, Norway and Denmark specifically. Its services are organised around five stages: anticipate (threat intelligence, dark-web surveillance), identify (assessments, ethical hacking), protect (network/app/data/endpoint/identity security), detect (managed threat detection, 24/7 \"CyberSOC\" service) and respond (incident response, forensics, cyber resilience).",
+    confirmedServices: ["mdr", "soc", "incidentResponse", "threatIntelligence", "penetrationTesting"],
+    notableFacts: ["States it operates 18 SOCs worldwide with support in 160 countries."],
+    languagesConfirmed: ["English"],
+    sources: [{ label: "Orange Cyberdefense — Global", url: "https://www.orangecyberdefense.com/global/" }],
+  },
+  {
+    slug: "netsecurity",
+    name: "Netsecurity",
+    hqCountry: "Norway",
+    otherCountries: [],
+    tagline: "Norway-focused MDR and OT-security provider",
+    overview:
+      "Netsecurity is a Norwegian cybersecurity company serving private companies, municipalities and critical-infrastructure operators. It publicly lists Managed Detection & Response (for private sector, municipal sector and OT/industrial systems), penetration testing, backup and patch-management services, incident response (which it states is approved by the Norwegian National Security Authority, NSM), strategic advisory, OT/industrial cybersecurity, and red-team services. It also states it is Palo Alto Networks' largest partner in Norway and the first European partner to reach Palo Alto's Diamond Partner tier.",
+    confirmedServices: ["mdr", "otSecurity", "penetrationTesting", "incidentResponse"],
+    notableFacts: [
+      "States its incident response is approved by the Norwegian National Security Authority (NSM).",
+      "Palo Alto Networks' largest partner in Norway; first European Diamond Partner.",
+    ],
+    languagesConfirmed: ["English", "Norwegian"],
+    sources: [{ label: "Netsecurity — home", url: "https://www.netsecurity.no/en/" }],
+  },
+  {
+    slug: "telia-security",
+    name: "Telia Security",
+    hqCity: "Stockholm",
+    hqCountry: "Sweden",
+    otherCountries: [],
+    parentOrg: "Telia Company (publicly listed Nordic telecom operator)",
+    tagline: "Security Operations Center run by the Nordic telecom incumbent",
+    overview:
+      "Telia Security is offered by Telia Company, the publicly listed Nordic telecom operator headquartered in Stockholm/Solna, Sweden. Telia publishes a \"Security Operations Center\" enterprise service as part of its broader offering; the public page describing it is JavaScript-rendered and we were unable to confirm specific service inclusions, so this listing is intentionally limited to what we could verify: that the service exists and who runs it. Confirm scope and delivery details directly with Telia.",
+    confirmedServices: ["soc"],
+    notableFacts: ["Telia Company is a publicly listed telecom operator, not a security-only specialist."],
+    languagesConfirmed: ["English"],
+    sources: [
+      { label: "Telia — Security Operations Center", url: "https://www.teliacompany.com/en/solutions/global/security-operations-center" },
+      { label: "Wikipedia — Telia Company", url: "https://en.wikipedia.org/wiki/Telia_Company" },
+    ],
   },
 ];
 
@@ -298,18 +324,19 @@ export function getProvider(slug: string): Provider | undefined {
   return providers.find((p) => p.slug === slug);
 }
 
-export function capabilityScore(provider: Provider): { met: number; total: number } {
-  const total = CAPABILITY_ORDER.length;
-  const met = CAPABILITY_ORDER.filter((k) => provider.capabilities[k]).length;
-  return { met, total };
+export function confirmedServiceCount(provider: Provider): { met: number; total: number } {
+  return { met: provider.confirmedServices.length, total: SERVICE_TAG_ORDER.length };
 }
 
-// Filter option sets for the provider directory
+export function allPresenceCountries(provider: Provider): string[] {
+  return Array.from(new Set([provider.hqCountry, ...provider.otherCountries]));
+}
+
+// Filter option sets for the provider directory. "presenceCountries" is a
+// soft, informational filter (see conversation note: country of operation
+// is not treated as a pass/fail security-capability requirement).
 export const filterOptions = {
-  country: Array.from(new Set(providers.map((p) => p.country))),
-  service: ["Managed Detection & Response"],
-  companySize: ["50–500 employees", "500–2,000 employees", "2,000+ employees"],
-  technology: ["Microsoft 365", "Azure", "Microsoft Defender", "Microsoft Sentinel", "CrowdStrike", "AWS"],
-  socLocation: Array.from(new Set(providers.map((p) => `${p.city}, ${p.country}`))),
-  language: Array.from(new Set(providers.flatMap((p) => p.languages))),
+  hqCountry: Array.from(new Set(providers.map((p) => p.hqCountry))),
+  presenceCountry: Array.from(new Set(providers.flatMap((p) => allPresenceCountries(p)))).sort(),
+  serviceTag: SERVICE_TAG_ORDER,
 };
