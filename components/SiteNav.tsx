@@ -74,7 +74,7 @@ export default function SiteNav() {
             )}
           </div>
           <a
-            href="mailto:partners@cyberpick.io"
+            href="mailto:cyberpickeu@proton.me"
             className="hidden text-sm text-white/70 transition-colors hover:text-white sm:inline"
           >
             {dict.nav.forProviders}
