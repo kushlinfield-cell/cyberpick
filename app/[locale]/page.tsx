@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import SiteNav from "@/components/SiteNav";
 import Button from "@/components/Button";
 import { ArrowRightIcon, CheckIcon, DashIcon, NodeIcon, LockIcon } from "@/components/Icons";
@@ -165,33 +166,51 @@ export default function HomePage() {
             <h2 className="text-3xl font-semibold tracking-tight text-ink">{dict.home.servicesHeading}</h2>
             <p className="max-w-xl text-[15px] text-muted">{dict.home.servicesSubcopy}</p>
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {serviceOfferings.map((offering) => (
-              <div
-                key={offering.tag}
-                className={
-                  offering.guidedQuestionnaire
-                    ? "flex flex-col gap-3 rounded-lg border border-accent bg-white p-6"
-                    : "flex flex-col gap-3 rounded-lg border border-border bg-white p-6"
-                }
-              >
-                <NodeIcon className={offering.guidedQuestionnaire ? "h-5 w-5 text-accent" : "h-5 w-5 text-muted"} />
-                <span className="text-sm font-medium text-ink">{dict.serviceTags[offering.tag]}</span>
-                <span
-                  className={
-                    offering.guidedQuestionnaire
-                      ? "w-fit rounded bg-success-tint px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.04em] text-success"
-                      : "w-fit rounded bg-bg-light px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.04em] text-muted"
-                  }
-                >
-                  {offering.guidedQuestionnaire ? dict.home.guidedAvailable : dict.home.directoryOnly}
-                </span>
-                <span className="font-mono text-[11px] text-muted">
-                  {fmt(dict.home.confirmedProvidersFmt, { count: offering.providerCount })}
-                </span>
+          {(() => {
+            const featured = serviceOfferings.find((o) => o.guidedQuestionnaire);
+            const rest = serviceOfferings.filter((o) => !o.guidedQuestionnaire);
+            return (
+              <div className="flex flex-col gap-4">
+                {featured && (
+                  <div className="flex flex-col gap-5 rounded-lg border border-accent bg-white p-7 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-start gap-4">
+                      <NodeIcon className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
+                      <div className="flex flex-col gap-1.5">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-base font-semibold text-ink">{dict.serviceTags[featured.tag]}</span>
+                          <span className="w-fit rounded bg-success-tint px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.04em] text-success">
+                            {dict.home.guidedAvailable}
+                          </span>
+                        </div>
+                        <span className="font-mono text-[11px] text-muted">
+                          {fmt(dict.home.confirmedProvidersFmt, { count: featured.providerCount })}
+                        </span>
+                      </div>
+                    </div>
+                    <Button href={`/${locale}/questionnaire`} size="sm" className="shrink-0 self-start sm:self-center">
+                      {dict.home.heroCtaPrimary}
+                    </Button>
+                  </div>
+                )}
+
+                <div className="flex flex-col gap-3 rounded-lg border border-border bg-white p-7">
+                  <span className="label-muted">{dict.home.directoryOnly}</span>
+                  <div className="flex flex-wrap gap-2">
+                    {rest.map((offering) => (
+                      <Link
+                        key={offering.tag}
+                        href={`/${locale}/providers?service=${offering.tag}`}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-border-strong bg-bg-light px-3.5 py-1.5 text-sm text-ink transition-colors hover:border-accent hover:text-accent"
+                      >
+                        {dict.serviceTags[offering.tag]}
+                        <span className="font-mono text-[11px] text-muted">{offering.providerCount}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               </div>
-            ))}
-          </div>
+            );
+          })()}
         </div>
       </section>
 

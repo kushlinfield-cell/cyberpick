@@ -41,7 +41,7 @@ export default function QuestionnairePage() {
   const selectedEnvironment = q.environmentOptions.filter((o) => environment[o]);
   const selectedCapabilities = q.capabilityOptions.filter((o) => capabilities[o]);
 
-  const next = () => setStep((s) => Math.min(6, s + 1));
+  const next = () => setStep((s) => Math.min(5, s + 1));
   const back = () => setStep((s) => Math.max(1, s - 1));
 
   return (
@@ -58,7 +58,7 @@ export default function QuestionnairePage() {
               {q.stepOfFmt.replace("{n}", String(step)).replace("{label}", q.stepLabels[step - 1])}
             </span>
             <div className="h-1 w-32 overflow-hidden rounded-full bg-border">
-              <div className="h-full rounded-full bg-accent transition-all" style={{ width: `${(step / 6) * 100}%` }} />
+              <div className="h-full rounded-full bg-accent transition-all" style={{ width: `${(step / 5) * 100}%` }} />
             </div>
           </div>
         </div>
@@ -81,18 +81,7 @@ export default function QuestionnairePage() {
           )}
 
           {step === 2 && (
-            <StepShell n={2} title={q.step2Title} desc={q.step2Desc}>
-              <Field label={q.serviceLabel}>
-                <div className="flex flex-wrap gap-2.5">
-                  <PillToggle label="Managed Detection & Response" selected />
-                </div>
-              </Field>
-              <p className="text-[13px] leading-relaxed text-muted">{q.otherCategoriesNote}</p>
-            </StepShell>
-          )}
-
-          {step === 3 && (
-            <StepShell n={3} title={q.step3Title} desc={q.step3Desc}>
+            <StepShell n={2} title={q.step3Title} desc={q.step3Desc}>
               <Field label={q.environmentLabel}>
                 <div className="flex flex-wrap gap-2.5">
                   {q.environmentOptions.map((opt) => (
@@ -103,8 +92,8 @@ export default function QuestionnairePage() {
             </StepShell>
           )}
 
-          {step === 4 && (
-            <StepShell n={4} title={q.step4Title} desc={q.step4Desc}>
+          {step === 3 && (
+            <StepShell n={3} title={q.step4Title} desc={q.step4Desc}>
               <Field label={q.capabilitiesLabel}>
                 <div className="flex flex-wrap gap-2.5">
                   {q.capabilityOptions.map((opt) => (
@@ -115,8 +104,8 @@ export default function QuestionnairePage() {
             </StepShell>
           )}
 
-          {step === 5 && (
-            <StepShell n={5} title={q.step5Title} desc={q.step5Desc}>
+          {step === 4 && (
+            <StepShell n={4} title={q.step5Title} desc={q.step5Desc}>
               <Field label={q.dataHandlingLabel}>
                 <PillToggle label={q.euEeaLabel} selected={euEea} onClick={() => setEuEea((v) => !v)} />
               </Field>
@@ -132,20 +121,20 @@ export default function QuestionnairePage() {
             </StepShell>
           )}
 
-          {step === 6 && (
-            <StepShell n={6} title={q.step6Title} desc={q.step6Desc}>
+          {step === 5 && (
+            <StepShell n={5} title={q.step6Title} desc={q.step6Desc}>
               <ReviewRow label={q.reviewCountry} value={dict.countries[country] ?? country} onEdit={() => setStep(1)} editLabel={q.edit} />
               <ReviewRow label={q.reviewIndustry} value={industry} onEdit={() => setStep(1)} editLabel={q.edit} />
               <ReviewRow label={q.reviewEmployees} value={employees} onEdit={() => setStep(1)} editLabel={q.edit} />
-              <ReviewRow label={q.reviewService} value="Managed Detection & Response" onEdit={() => setStep(2)} editLabel={q.edit} />
-              <ReviewRow label={q.reviewEnvironment} value={selectedEnvironment.join(", ") || "—"} onEdit={() => setStep(3)} editLabel={q.edit} />
-              <ReviewRow label={q.reviewCapabilities} value={selectedCapabilities.join(", ") || "—"} onEdit={() => setStep(4)} editLabel={q.edit} />
+              <ReviewRow label={q.reviewService} value="Managed Detection & Response" />
+              <ReviewRow label={q.reviewEnvironment} value={selectedEnvironment.join(", ") || "—"} onEdit={() => setStep(2)} editLabel={q.edit} />
+              <ReviewRow label={q.reviewCapabilities} value={selectedCapabilities.join(", ") || "—"} onEdit={() => setStep(3)} editLabel={q.edit} />
               <ReviewRow
                 label={q.reviewOperational}
                 value={[euEea ? q.euEeaLabel : null, englishService ? q.englishLabel : null, localLanguage ? q.localLanguageLabel : null, timeline]
                   .filter(Boolean)
                   .join(", ")}
-                onEdit={() => setStep(5)}
+                onEdit={() => setStep(4)}
                 editLabel={q.edit}
               />
             </StepShell>
@@ -159,7 +148,7 @@ export default function QuestionnairePage() {
             ) : (
               <span />
             )}
-            {step < 6 ? (
+            {step < 5 ? (
               <Button onClick={next}>{q.continue}</Button>
             ) : (
               <Button href={`/${locale}/requirements`}>{q.generate}</Button>
@@ -213,16 +202,28 @@ function PillGroup({
   );
 }
 
-function ReviewRow({ label, value, onEdit, editLabel }: { label: string; value: string; onEdit: () => void; editLabel: string }) {
+function ReviewRow({
+  label,
+  value,
+  onEdit,
+  editLabel,
+}: {
+  label: string;
+  value: string;
+  onEdit?: () => void;
+  editLabel?: string;
+}) {
   return (
     <div className="flex items-start justify-between gap-6 border-b border-border py-4 last:border-b-0">
       <div className="flex flex-col gap-1">
         <span className="label-muted">{label}</span>
         <span className="text-sm text-ink">{value}</span>
       </div>
-      <button type="button" onClick={onEdit} className="shrink-0 font-mono text-xs text-accent">
-        {editLabel}
-      </button>
+      {onEdit && (
+        <button type="button" onClick={onEdit} className="shrink-0 font-mono text-xs text-accent">
+          {editLabel}
+        </button>
+      )}
     </div>
   );
 }

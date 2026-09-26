@@ -61,7 +61,7 @@ export interface Dictionary {
   };
   questionnaire: {
     cancel: string;
-    stepOfFmt: string; // "Step {n} of 6 · {label}"
+    stepOfFmt: string; // "Step {n} of 5 · {label}"
     stepLabels: string[];
     step1Title: string;
     step1Desc: string;
@@ -70,11 +70,6 @@ export interface Dictionary {
     employeesLabel: string;
     industries: string[];
     employeeBands: string[];
-    step2Title: string;
-    step2Desc: string;
-    serviceLabel: string;
-    comingSoonSuffix: string;
-    otherCategoriesNote: string;
     step3Title: string;
     step3Desc: string;
     environmentLabel: string;
@@ -148,7 +143,6 @@ export interface Dictionary {
     resultsCountFmt: string;
     noMatches: string;
     viewProvider: string;
-    scopeNote: string;
     disclaimer: string;
   };
   providerProfile: {

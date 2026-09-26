@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import SiteNav from "@/components/SiteNav";
 import { providers, filterOptions, confirmedServiceCount, allPresenceCountries, SERVICE_TAG_ORDER, type ServiceTag } from "@/lib/mock-data";
@@ -14,6 +14,16 @@ export default function ProviderDirectoryPage() {
   const [hqCountry, setHqCountry] = useState<Set<string>>(new Set());
   const [presenceCountry, setPresenceCountry] = useState<Set<string>>(new Set());
   const [serviceTag, setServiceTag] = useState<Set<ServiceTag>>(new Set());
+
+  // Pick up a `?service=<tag>` link from the homepage's coverage section so a
+  // category link lands pre-filtered instead of on the unfiltered directory.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const requested = new URLSearchParams(window.location.search).get("service");
+    if (requested && (SERVICE_TAG_ORDER as readonly string[]).includes(requested)) {
+      setServiceTag(new Set([requested as ServiceTag]));
+    }
+  }, []);
 
   const toggleSet = <T,>(set: Set<T>, setter: (s: Set<T>) => void, value: T) => {
     const next = new Set(set);
@@ -103,8 +113,6 @@ export default function ProviderDirectoryPage() {
                 ))}
               </div>
             </div>
-
-            <div className="border-t border-border pt-5 text-xs text-muted">{d.scopeNote}</div>
           </aside>
 
           <div className="flex flex-col gap-5">
